@@ -1,16 +1,90 @@
-# React + Vite
+# LMS Admin Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This folder is the admin control panel for the Learning Management System. It is designed for platform administrators to manage users, courses, categories, settings, and overall LMS data.
 
-Currently, two official plugins are available:
+## What this app does
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The admin dashboard allows an administrator to:
 
-## React Compiler
+- manage registered users and their roles
+- add, delete, and monitor courses
+- group content into categories
+- review overview analytics
+- edit admin profile information
+- switch dark mode on the platform
+- manage the learning platform as a central control panel
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Main features
 
-## Expanding the ESLint configuration
+- User management dashboard
+- Course approval and listing management
+- Category creation and organization
+- Analytics and overview panels
+- Theme toggle for light/dark mode
+- Local browser persistence for all admin data
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Folder structure
+
+```bash
+lms-admin/
+├── public/
+│   ├── favicon.svg
+│   └── icons.svg
+├── src/
+│   ├── assets/
+│   ├── components/
+│   │   ├── Header.jsx
+│   │   └── Sidebar.jsx
+│   ├── pages/
+│   │   ├── AdminLogin.jsx
+│   │   ├── Analytics.jsx
+│   │   ├── Categories.jsx
+│   │   ├── Courses.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── NotFound.jsx
+│   │   ├── Profile.jsx
+│   │   └── Users.jsx
+│   ├── App.jsx
+│   ├── App.css
+│   ├── index.css
+│   ├── main.jsx
+│   └── ...
+├── index.html
+├── package.json
+├── vite.config.js
+└── README.md
+```
+
+## How it works
+
+This admin area is a React + Vite frontend that stores its state in `localStorage` so administrators can manage records without a backend.
+
+- `src/App.jsx` is the core application state manager
+- It stores admin settings, users, courses, categories, and theme preferences
+- It uses `useEffect` to save the data after every update
+- Each page handles a different management function such as users, courses, analytics, and profiles
+- The sidebar helps navigate between the different admin modules
+
+## Typical admin workflow
+
+1. Administrator opens the dashboard
+2. Views total users, courses, and content categories
+3. Adds new users or manages existing account status
+4. Creates or removes courses
+5. Organizes content under categories
+6. Reviews analytics and profile details
+
+## Run this project
+
+From this folder:
+
+```bash
+npm install
+npm run dev
+```
+
+Then open the local Vite URL in the terminal.
+
+## Notes
+
+This is a frontend-only admin dashboard designed for demos and educational use. It can later be connected to a real backend, authentication layer, and database for production deployment.
