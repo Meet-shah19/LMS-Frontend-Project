@@ -2,31 +2,74 @@
 import { useState } from "react";
 import { Plus, Trash2, PlayCircle, FileText, Link as LinkIcon } from "lucide-react";
 
-export default function LessonEditor({ lessons = [], onChange }) {
+export default function LessonEditor({
+  lessons = [],
+  onChange,
+  modules = [],
+}) {
   const [title, setTitle] = useState("");
   const [type, setType] = useState("video");
   const [content, setContent] = useState("");
+  const [module, setModule] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [formError, setFormError] = useState("");
 
   function addLesson(event) {
-    event.preventDefault();
-    if (!title.trim() || !content.trim()) return;
+    event?.preventDefault();
+    if (!title.trim() || !content.trim()) {
+      setFormError("Enter a lesson title and content.");
+      return;
+    }
+    if (type !== "text") {
+      try {
+        const url = new URL(content.trim());
+        if (!["http:", "https:"].includes(url.protocol)) throw new Error();
+      } catch {
+        setFormError("Enter a valid HTTP or HTTPS link for this lesson.");
+        return;
+      }
+    }
 
-    onChange([
-      ...lessons,
-      {
-        id: crypto.randomUUID(),
+    const updatedLesson = {
+        id: editingId || crypto.randomUUID(),
         title: title.trim(),
         type,
-        content: content.trim()
-      }
-    ]);
+        content: content.trim(),
+        module,
+        isFreeIntroduction: editingId
+          ? Boolean(lessons.find((lesson) => lesson.id === editingId)?.isFreeIntroduction)
+          : lessons.length === 0,
+      };
+    onChange(editingId
+      ? lessons.map((lesson) => lesson.id === editingId ? updatedLesson : lesson)
+      : [...lessons, updatedLesson]);
 
     setTitle("");
     setContent("");
+    setType("video");
+    setModule("");
+    setEditingId(null);
+    setFormError("");
+  }
+
+  function editLesson(lesson) {
+    setEditingId(lesson.id);
+    setTitle(lesson.title);
+    setType(lesson.type);
+    setContent(lesson.content);
+    setModule(lesson.module || "");
+    setFormError("");
   }
 
   function removeLesson(id) {
     onChange(lessons.filter((lesson) => lesson.id !== id));
+    if (editingId === id) {
+      setEditingId(null);
+      setTitle("");
+      setContent("");
+      setType("video");
+      setModule("");
+    }
   }
 
   return (
@@ -47,8 +90,26 @@ export default function LessonEditor({ lessons = [], onChange }) {
               <div className="lesson-type-icon"><Icon size={18} /></div>
               <div className="lesson-row-info">
                 <strong>{lesson.title}</strong>
-                <small>{lesson.type.toUpperCase()} · {lesson.content.slice(0, 60)}</small>
+                <small>{lesson.type.toUpperCase()}{lesson.module ? ` · ${lesson.module}` : ""} · {lesson.content.slice(0, 60)}</small>
+                <label className="free-intro-choice">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(lesson.isFreeIntroduction)}
+                    onChange={() => onChange(lessons.map((item) => ({
+                      ...item,
+                      isFreeIntroduction: item.id === lesson.id,
+                    })))}
+                  />
+                  Free introduction lesson
+                </label>
               </div>
+              <button
+                type="button"
+                className="text-button"
+                onClick={() => editLesson(lesson)}
+              >
+                Edit
+              </button>
               <button
                 type="button"
                 className="icon-button danger-button"
@@ -62,11 +123,28 @@ export default function LessonEditor({ lessons = [], onChange }) {
         })}
       </div>
 
-      <form onSubmit={addLesson} className="lesson-add-form">
+      <div
+        className="lesson-add-form"
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && event.target.tagName !== "TEXTAREA") {
+            event.preventDefault();
+          }
+        }}
+      >
         <label>
           Lesson title
-          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Introduction" required />
+          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Introduction" />
         </label>
+
+        {modules.length > 0 && (
+          <label>
+            Module
+            <select value={module} onChange={(event) => setModule(event.target.value)}>
+              <option value="">Unassigned</option>
+              {modules.map((name, index) => <option key={`${name}-${index}`}>{name}</option>)}
+            </select>
+          </label>
+        )}
 
         <label>
           Content type
@@ -90,17 +168,33 @@ export default function LessonEditor({ lessons = [], onChange }) {
                   : "Write your lesson content here..."
             }
             rows={3}
-            required
           />
           {type === "pdf" && (
             <small className="field-hint">Use a direct PDF URL. This demo stores the link, not an uploaded file.</small>
           )}
         </label>
 
-        <button className="button button-secondary" type="submit">
-          <Plus size={16} /> Add lesson
+        {formError && <p className="form-error" role="alert">{formError}</p>}
+        <button className="button button-secondary" type="button" onClick={addLesson}>
+          <Plus size={16} /> {editingId ? "Update lesson" : "Add lesson"}
         </button>
-      </form>
+        {editingId && (
+          <button
+            className="button button-secondary"
+            type="button"
+            onClick={() => {
+              setEditingId(null);
+              setTitle("");
+              setContent("");
+              setType("video");
+              setModule("");
+              setFormError("");
+            }}
+          >
+            Cancel edit
+          </button>
+        )}
+      </div>
     </section>
   );
 }

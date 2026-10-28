@@ -46,6 +46,9 @@ export default function CourseCard({
           <span>{modules.length} modules</span>
           <span>{lessons.length} lessons</span>
         </div>
+        <div className="catalog-course-price">
+          {Number(course.price) > 0 ? `₹${Number(course.price).toLocaleString("en-IN")}` : "Free"}
+        </div>
 
         <div className="progress-label">
           <span>Your progress</span>
@@ -71,7 +74,7 @@ export default function CourseCard({
           onClick={() => onOpen(course)}
         >
           <PlayCircle size={18} />
-          {percentage > 0 ? "Continue learning" : "Start learning"}
+          {percentage > 0 ? "Continue learning" : "View course"}
         </button>
       </div>
     </article>

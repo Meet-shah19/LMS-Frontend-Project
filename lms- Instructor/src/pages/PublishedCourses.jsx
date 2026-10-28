@@ -1,26 +1,29 @@
 
 import { useEffect, useState } from "react";
-import { getCourses } from "../utils/storage";
+import { getCourses } from "../api";
 
 export default function PublishedCourses() {
   const [courses, setCourses] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const loadCourses = () => {
-      setCourses(
-        getCourses().filter(
-          (course) =>
-            course.status === "published" ||
+    let mounted = true;
+    getCourses()
+      .then((sharedCourses) => {
+        if (mounted) {
+          setCourses(sharedCourses.filter((course) =>
+            ["approved", "published"].includes(String(course.status || "").toLowerCase()) ||
             course.isPublished === true
-        )
-      );
+          ));
+        }
+      })
+      .catch((loadError) => {
+        if (mounted) setError(loadError.message);
+      });
+
+    return () => {
+      mounted = false;
     };
-
-    loadCourses();
-    window.addEventListener("coursesUpdated", loadCourses);
-
-    return () =>
-      window.removeEventListener("coursesUpdated", loadCourses);
   }, []);
 
   const openCourse = (course) => {
@@ -37,6 +40,7 @@ export default function PublishedCourses() {
     <main className="page-content">
       <h1>Published Courses</h1>
       <p>Open your published courses here.</p>
+      {error && <p role="alert">{error}</p>}
 
       {courses.length === 0 ? (
         <p>

@@ -6,10 +6,11 @@ function Courses({
   users,
   addCourse,
   deleteCourse,
+  editCourse,
+  setCoursePublished,
 }) {
   const instructors = users.filter(
-    (user) =>
-      user.role === "Instructor"
+    (user) => user.role.toLowerCase() === "instructor"
   );
 
   const [title, setTitle] =
@@ -26,6 +27,10 @@ function Courses({
 
   const [price, setPrice] =
     useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const visibleCourses = statusFilter === "all"
+    ? courses
+    : courses.filter((course) => String(course.status || "").toLowerCase() === statusFilter);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -166,7 +171,7 @@ function Courses({
           </div>
 
           <div className="input-group">
-            <label>Price</label>
+            <label>Price (INR)</label>
 
             <input
               type="number"
@@ -192,12 +197,24 @@ function Courses({
           <div>
             <h3>All Courses</h3>
             <p>
-              {courses.length} courses
+              {visibleCourses.length} courses
             </p>
           </div>
+          <label className="course-status-filter">
+            Status
+            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+              <option value="all">All statuses</option>
+              <option value="draft">Draft</option>
+              <option value="pending_review">Pending review</option>
+              <option value="changes_requested">Changes requested</option>
+              <option value="approved">Approved</option>
+              <option value="published">Published</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </label>
         </div>
 
-        {courses.length === 0 ? (
+        {visibleCourses.length === 0 ? (
           <Empty
             icon="📚"
             title="No courses yet"
@@ -205,18 +222,15 @@ function Courses({
           />
         ) : (
           <div className="course-grid">
-            {courses.map((course) => (
-              <article
-                className="course-card"
-                key={course.id}
-              >
+            {visibleCourses.map((course) => (
+              <article className="course-card" key={course.id}>
                 <div className="course-top">
                   <div className="course-icon">
                     📚
                   </div>
 
                   <Badge
-                    text={course.status}
+                    text={String(course.status || "draft").replaceAll("_", " ")}
                   />
                 </div>
 
@@ -241,6 +255,28 @@ function Courses({
                     ₹{course.price}
                   </strong>
 
+                  <button
+                    className="edit-button"
+                    onClick={() => editCourse(course)}
+                  >
+                    Edit
+                  </button>
+                  {String(course.status).toLowerCase() === "approved" && (
+                    <button
+                      className="publish-button"
+                      onClick={() => setCoursePublished(course.id, true)}
+                    >
+                      Publish
+                    </button>
+                  )}
+                  {String(course.status).toLowerCase() === "published" && (
+                    <button
+                      className="publish-button"
+                      onClick={() => setCoursePublished(course.id, false)}
+                    >
+                      Unpublish
+                    </button>
+                  )}
                   <button
                     className="delete-button"
                     onClick={() =>

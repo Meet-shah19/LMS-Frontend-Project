@@ -1,6 +1,7 @@
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { GraduationCap, Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { login, setToken } from "../api.js";
 import "./Login.css";
 
 export default function Login({ onLogin }) {
@@ -10,7 +11,7 @@ export default function Login({ onLogin }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
 
@@ -30,28 +31,19 @@ export default function Login({ onLogin }) {
     }
 
     setLoading(true);
-
-    const instructor = {
-      email: email.trim().toLowerCase(),
-      role: "Instructor",
-      loggedIn: true,
-    };
-
-    // Frontend-only demo session.
-    localStorage.setItem(
-      "instructorSession",
-      JSON.stringify(instructor)
-    );
-
-    if (onLogin) {
-      onLogin(instructor);
-    } else {
-      setError(
-        "Login details validated. Connect this page to your dashboard in App.jsx."
-      );
+    try {
+      const result = await login({ email: email.trim(), password });
+      if (result.user.role !== "instructor") {
+        setError("This account does not have instructor access.");
+        return;
+      }
+      setToken(result.token);
+      onLogin?.(result.user);
+    } catch (loginError) {
+      setError(loginError.message);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   return (

@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NotebookPen, Save } from "lucide-react";
 
 export default function MyNotes({
@@ -25,13 +25,17 @@ export default function MyNotes({
     (lesson) => String(lesson.id) === selectedLessonId
   );
 
-  const [draft, setDraft] = useState("");
+  const savedDraft = selectedLesson ? notes[selectedLesson.id] || "" : "";
+  const [draft, setDraft] = useState(savedDraft);
+  const [draftSource, setDraftSource] = useState({
+    lessonId: selectedLessonId,
+    value: savedDraft,
+  });
 
-  useEffect(() => {
-    setDraft(
-      selectedLesson ? notes[selectedLesson.id] || "" : ""
-    );
-  }, [selectedLessonId, selectedLesson, notes]);
+  if (draftSource.lessonId !== selectedLessonId || draftSource.value !== savedDraft) {
+    setDraftSource({ lessonId: selectedLessonId, value: savedDraft });
+    setDraft(savedDraft);
+  }
 
   function saveNote() {
     if (!selectedLesson) return;
@@ -68,7 +72,9 @@ export default function MyNotes({
             id="note-lesson"
             className="form-control"
             value={selectedLessonId}
-            onChange={(event) => setSelectedLessonId(event.target.value)}
+            onChange={(event) => {
+              setSelectedLessonId(event.target.value);
+            }}
           >
             {lessons.map((lesson) => (
               <option key={lesson.id} value={String(lesson.id)}>

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Plus, Trash2, Save } from "lucide-react";
+import { Clock3, Plus, Sparkles, Trash2, Save } from "lucide-react";
 
 const emptyQuestion = () => ({
   id: crypto.randomUUID(),
@@ -12,6 +12,7 @@ const emptyQuestion = () => ({
 export default function QuizBuilder({ courses, onSave, onCancel }) {
   const [title, setTitle] = useState("");
   const [courseId, setCourseId] = useState(courses[0]?.id || "");
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState(10);
   const [questions, setQuestions] = useState([emptyQuestion()]);
   const [error, setError] = useState("");
 
@@ -57,17 +58,26 @@ export default function QuizBuilder({ courses, onSave, onCancel }) {
       id: crypto.randomUUID(),
       title: title.trim(),
       courseId,
+      timeLimitMinutes: Number(timeLimitMinutes),
       questions,
       createdAt: new Date().toISOString()
     });
   }
 
   return (
-    <form className="editor-form" onSubmit={submit}>
+    <form className="editor-form quiz-builder-form" onSubmit={submit}>
+      <div className="quiz-builder-banner">
+        <div className="quiz-builder-banner-icon"><Sparkles size={22} /></div>
+        <div>
+          <span>ASSESSMENT DESIGNER</span>
+          <h3>Build a quiz your students will love</h3>
+          <p>Add clear questions, choose the right answers, and set a fair time limit.</p>
+        </div>
+      </div>
       {error && <div className="form-error">{error}</div>}
 
       <div className="form-grid">
-        <label className="full-field">
+        <label>
           Quiz title *
           <input
             value={title}
@@ -77,7 +87,7 @@ export default function QuizBuilder({ courses, onSave, onCancel }) {
           />
         </label>
 
-        <label className="full-field">
+        <label>
           Course *
           <select value={courseId} onChange={(e) => setCourseId(e.target.value)} required>
             {courses.length === 0 && <option value="">No courses available</option>}
@@ -86,12 +96,29 @@ export default function QuizBuilder({ courses, onSave, onCancel }) {
             ))}
           </select>
         </label>
+        <label className="quiz-time-field">
+          Time limit
+          <span className="quiz-time-input">
+            <Clock3 size={17} />
+            <input
+              type="number"
+              min="1"
+              max="180"
+              value={timeLimitMinutes}
+              onChange={(event) => setTimeLimitMinutes(event.target.value)}
+              aria-label="Quiz time limit in minutes"
+              required
+            />
+            <span>minutes</span>
+          </span>
+          <small>Students will be automatically submitted when time runs out.</small>
+        </label>
       </div>
 
       <div className="section-divider" />
       <div className="quiz-question-heading">
         <div>
-          <h3>Questions</h3>
+          <h3>Quiz questions <span className="quiz-question-count">{questions.length}</span></h3>
           <p className="field-hint">Add four choices and select the correct answer.</p>
         </div>
         <button

@@ -2,21 +2,24 @@ function Analytics({
   users,
   courses,
   categories,
+  purchases = [],
 }) {
   const students = users.filter(
     (user) =>
-      user.role === "Student"
+      user.role.toLowerCase() === "student"
   ).length;
 
   const instructors = users.filter(
     (user) =>
-      user.role === "Instructor"
+      user.role.toLowerCase() === "instructor"
   ).length;
 
   const active = users.filter(
     (user) =>
       user.status === "Active"
   ).length;
+  const paidPurchases = purchases.filter((purchase) => purchase.status === "paid");
+  const revenue = paidPurchases.reduce((total, purchase) => total + Number(purchase.amount || 0), 0);
 
   return (
     <>
@@ -48,6 +51,16 @@ function Analytics({
           icon="●"
           title="Active Users"
           value={active}
+        />
+        <Stat
+          icon="₹"
+          title="Confirmed Revenue"
+          value={`₹${revenue.toLocaleString("en-IN")}`}
+        />
+        <Stat
+          icon="▤"
+          title="Paid Purchases"
+          value={paidPurchases.length}
         />
       </div>
 

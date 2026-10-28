@@ -1,6 +1,4 @@
 
-import React from "react";
-
 function getYouTubeEmbedUrl(url) {
   try {
     const parsed = new URL(url);

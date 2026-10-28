@@ -1,4 +1,8 @@
 
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/utilities";
+
 * {
   margin: 0;
   padding: 0;
@@ -6,22 +10,18 @@
 }
 
 :root {
-  font-family:
-    Inter,
-    Arial,
-    Helvetica,
-    sans-serif;
+  font-family: "Manrope", Arial, Helvetica, sans-serif;
 
-  --primary: #635bff;
-  --primary-dark: #5048d8;
+  --primary: #9b4dff;
+  --primary-dark: #8437e8;
 
-  --background: #f5f6fa;
+  --background: #f7f5fc;
   --surface: #ffffff;
 
-  --text: #171925;
-  --muted: #85899a;
+  --text: #17124a;
+  --muted: #6b6880;
 
-  --border: #e8e9ef;
+  --border: #ece8f4;
 
   --sidebar: #ffffff;
 
@@ -1473,3 +1473,403 @@ td {
     display: none;
   }
 }
+
+.admin-review-page, .admin-payments-page { display: grid; gap: 20px; }
+.admin-page-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.admin-page-heading h1 { margin: 5px 0; font-size: 25px; letter-spacing: -.7px; }
+.admin-page-heading p, .admin-access-card p, .admin-payment-table-heading p { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.admin-eyebrow { color: var(--primary); font-size: 9px; font-weight: 800; letter-spacing: 1.4px; }
+.admin-count-badge { padding: 9px 12px; border-radius: 99px; color: #895b12; background: #fff4d8; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.admin-review-layout { display: grid; grid-template-columns: minmax(240px, .7fr) minmax(0, 1.3fr); gap: 18px; align-items: start; }
+.admin-review-list { display: grid; gap: 10px; }
+.admin-review-card { display: grid; gap: 8px; width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 12px; color: var(--text); background: var(--surface); text-align: left; }
+.admin-review-card.selected, .admin-review-card:hover { border-color: var(--primary); box-shadow: 0 7px 20px #635bff16; }
+.admin-review-card strong { font-size: 13px; }
+.admin-review-card > span:not(.admin-status-pill), .admin-review-card small { color: var(--muted); font-size: 10px; }
+.admin-review-detail, .admin-access-card, .admin-payment-table-card, .admin-empty-state { padding: 22px; border: 1px solid var(--border); border-radius: 13px; background: var(--surface); }
+.admin-review-detail h2, .admin-access-card h2, .admin-payment-table-heading h2 { margin: 7px 0; font-size: 17px; }
+.admin-review-detail > p { margin: 8px 0 17px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.admin-review-detail dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 17px; }
+.admin-review-detail dl div { padding: 11px; border-radius: 8px; background: var(--background); }
+.admin-review-detail dt { color: var(--muted); font-size: 9px; }
+.admin-review-detail dd { margin: 5px 0 0; font-size: 11px; font-weight: 700; }
+.admin-review-detail h3 { margin: 15px 0 7px; font-size: 12px; }
+.admin-review-lessons { display: grid; gap: 6px; padding-left: 19px; color: var(--muted); font-size: 11px; }
+.admin-review-lessons li { padding-left: 3px; }
+.admin-review-lessons span { margin-left: 8px; padding: 3px 6px; border-radius: 99px; color: var(--success); background: #e8f8ef; font-size: 9px; font-weight: 700; }
+.admin-review-note { display: grid; gap: 7px; margin-top: 17px; font-size: 11px; font-weight: 700; }
+.admin-review-note textarea, .admin-access-card select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; color: var(--text); background: var(--background); font: inherit; font-size: 11px; }
+.admin-review-note small { color: var(--muted); font-size: 9px; font-weight: 400; }
+.admin-review-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.admin-review-actions button, .admin-access-card button { padding: 10px 13px; border: 0; border-radius: 8px; color: white; font-size: 10px; font-weight: 700; }
+.review-approve { background: var(--success); }
+.review-changes { background: #d79728; }
+.review-reject { background: var(--danger); }
+.admin-review-actions button:disabled, .admin-access-card button:disabled { opacity: .6; cursor: wait; }
+.admin-review-placeholder, .admin-empty-state { display: grid; align-content: center; justify-items: center; min-height: 230px; text-align: center; }
+.admin-review-placeholder > span, .admin-empty-state > span { color: var(--primary); font-size: 24px; }
+.admin-review-placeholder p, .admin-empty-state p { color: var(--muted); font-size: 11px; }
+.admin-status-pill { display: inline-block; width: fit-content; padding: 4px 8px; border-radius: 99px; color: #895b12; background: #fff4d8; font-size: 9px; font-weight: 700; text-transform: capitalize; }
+.admin-status-pill.paid { color: #17704a; background: #e5f8ee; }
+.admin-status-pill.failed, .admin-status-pill.refunded, .admin-status-pill.rejected { color: #a93c49; background: #ffedf0; }
+.admin-payment-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+.admin-payment-summary article { display: grid; gap: 7px; padding: 16px; border: 1px solid var(--border); border-radius: 11px; background: var(--surface); }
+.admin-payment-summary span { color: var(--muted); font-size: 10px; }
+.admin-payment-summary strong { font-size: 19px; }
+.admin-access-card { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 22px; }
+.admin-access-card > div { flex: 1; }
+.admin-access-card form { display: grid; grid-template-columns: repeat(2, minmax(140px, 1fr)) auto; align-items: end; gap: 10px; flex: 1.4; }
+.admin-access-card label { display: grid; gap: 6px; font-size: 10px; font-weight: 700; }
+.admin-access-card button { background: var(--primary); white-space: nowrap; }
+.admin-payment-table-heading { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 15px; }
+.admin-table-scroll { overflow-x: auto; }
+.admin-table-scroll table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
+.admin-table-scroll th, .admin-table-scroll td { padding: 11px 9px; border-bottom: 1px solid var(--border); font-size: 10px; }
+.admin-table-scroll th { color: var(--muted); font-weight: 700; }
+.admin-revoke-button { padding: 6px 9px; border: 1px solid #ffd3d9; border-radius: 7px; color: var(--danger); background: transparent; font-size: 9px; font-weight: 700; }
+.admin-no-purchases { padding: 30px !important; color: var(--muted); text-align: center; }
+.course-status-filter { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 10px; font-weight: 700; }
+.course-status-filter select { padding: 8px 10px; border: 1px solid var(--border); border-radius: 7px; color: var(--text); background: var(--background); font-size: 10px; }
+.admin-access-error { grid-column: 1 / -1; margin: 0; color: var(--danger); font-size: 10px; }
+.admin-access-hint { flex: 1 0 100%; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.course-bottom { flex-wrap: wrap; gap: 8px; }
+.edit-button, .publish-button { padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; color: var(--primary); background: transparent; font-size: 9px; font-weight: 700; }
+.publish-button { color: var(--success); }
+.badge { text-transform: capitalize; }
+.admin-table-scroll td small { display: block; margin-top: 4px; color: var(--muted); font-size: 9px; }
+
+@media (max-width: 900px) {
+  .admin-review-layout { grid-template-columns: 1fr; }
+  .admin-access-card { align-items: stretch; flex-direction: column; }
+  .admin-access-card form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .admin-page-heading { align-items: flex-start; flex-direction: column; }
+  .admin-review-detail dl, .admin-payment-summary { grid-template-columns: 1fr; }
+  .admin-access-card form { grid-template-columns: 1fr; }
+  .admin-review-detail, .admin-access-card, .admin-payment-table-card { padding: 15px; }
+}
+
+  :root {
+    --secondary-accent: #ff6b4a;
+    --card-shadow: 0 10px 30px rgba(20, 10, 60, .06);
+  }
+
+  body,
+  .app {
+    background: linear-gradient(135deg, #f7f5fc 0%, #fff 85%);
+    color: var(--text);
+    font-family: "Manrope", Arial, Helvetica, sans-serif;
+  }
+
+  .sidebar,
+  .header,
+  .card,
+  .stat-card,
+  .course-card,
+  .category-card,
+  .admin-review-card,
+  .admin-review-detail,
+  .admin-access-card,
+  .admin-payment-table-card,
+  .admin-payment-summary article {
+    border-color: var(--border);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+  }
+
+  .sidebar {
+    border-radius: 0 18px 18px 0;
+  }
+
+  .brand-logo,
+  .footer-avatar,
+  .header-avatar {
+    background: var(--primary);
+  }
+
+  .sidebar-link,
+  .theme-button,
+  .mobile-button,
+  .primary-button,
+  .action-button,
+  .edit-button,
+  .publish-button {
+    border-radius: 999px;
+    transition: background-color .22s ease, color .22s ease, border-color .22s ease, transform .22s ease;
+  }
+
+  .sidebar-link.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(155, 77, 255, .2);
+  }
+
+  .sidebar-link:hover:not(.active) {
+    background: #f3eaff;
+    color: var(--primary);
+  }
+
+  .primary-button {
+    background: var(--primary);
+  }
+
+  .primary-button:hover {
+    background: var(--primary-dark);
+  }
+
+  .card,
+  .stat-card,
+  .course-card,
+  .category-card,
+  .overview-card,
+  .admin-review-card {
+    transition: transform .23s ease, box-shadow .23s ease, border-color .23s ease;
+  }
+
+  .stat-card:hover,
+  .course-card:hover,
+  .category-card:hover,
+  .admin-review-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(20, 10, 60, .1);
+  }
+
+  .stat-icon,
+  .overview-icon {
+    border-radius: 13px;
+  }
+
+  .stat-card:nth-child(4n + 1) .stat-icon { color: #9b4dff; background: #f0e6ff; }
+  .stat-card:nth-child(4n + 2) .stat-icon { color: #178f7b; background: #e2f7f1; }
+  .stat-card:nth-child(4n + 3) .stat-icon { color: #d98b26; background: #fff2df; }
+  .stat-card:nth-child(4n + 4) .stat-icon { color: #e45b64; background: #ffeaec; }
+
+  .input-group input,
+  .input-group select,
+  .category-form input,
+  .admin-review-note textarea,
+  .admin-access-card select,
+  .course-status-filter select {
+    border-radius: 12px;
+  }
+
+  .table-wrap,
+  .admin-table-scroll {
+    overflow-x: auto;
+    border-radius: 12px;
+  }
+
+  table th,
+  .admin-table-scroll th {
+    background: #f2edfb;
+    color: #6b6880;
+  }
+
+  table tbody tr,
+  .admin-table-scroll tbody tr {
+    transition: background-color .18s ease;
+  }
+
+  table tbody tr:hover,
+  .admin-table-scroll tbody tr:hover {
+    background: #faf7ff;
+  }
+
+  .badge,
+  .admin-status-pill,
+  .level,
+  .status-tag {
+    border-radius: 999px;
+  }
+
+  .admin-count-badge,
+  .review-changes {
+    color: #b84832;
+    background: #fff0ec;
+  }
+
+  .dark {
+    --background: #151421;
+    --surface: #201e2e;
+    --sidebar: #1b1928;
+    --text: #f1edff;
+    --muted: #b1abc3;
+    --border: #383346;
+    --hover: #302a40;
+    --primary: #b17aff;
+    --primary-dark: #9b5de9;
+  }
+
+  .dark body,
+  .dark.app {
+    background: var(--background);
+  }
+
+  .dark table th,
+  .dark .admin-table-scroll th {
+    background: #2b263a;
+  }
+
+  .dark table tbody tr:hover,
+  .dark .admin-table-scroll tbody tr:hover {
+    background: #2a2638;
+  }
+
+  @media (max-width: 600px) {
+    .sidebar { border-radius: 0 16px 16px 0; }
+  }
+
+  .content {
+    max-width: 1320px;
+    padding: 34px clamp(20px, 4vw, 48px) 60px;
+  }
+
+  .content > .page-title {
+    position: relative;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    margin: 0 0 30px;
+    padding: 30px clamp(24px, 4vw, 48px);
+    border: 1px solid #f0e8f4;
+    border-radius: 20px;
+    background:
+      radial-gradient(circle, rgba(255, 107, 74, .33) 1.5px, transparent 2px) right 28px top 24px / 12px 12px,
+      linear-gradient(110deg, #fff 0%, #fff8f6 48%, #f8f2ff 100%);
+    box-shadow: var(--card-shadow);
+  }
+
+  .content > .page-title::after {
+    position: absolute;
+    right: 10%;
+    bottom: -100px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255, 107, 74, .14);
+    box-shadow: 0 0 0 24px rgba(155, 77, 255, .06), 0 0 0 50px rgba(155, 77, 255, .04);
+    content: "";
+    pointer-events: none;
+  }
+
+  .content > .page-title h2,
+  .content > .page-title p {
+    position: relative;
+    z-index: 1;
+  }
+
+  .content > .page-title h2 {
+    max-width: 650px;
+    color: var(--text);
+    font: 800 clamp(31px, 4vw, 44px) "Manrope", sans-serif;
+    letter-spacing: -1.5px;
+  }
+
+  .content > .page-title p {
+    max-width: 580px;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  .header {
+    min-height: 76px;
+    border-radius: 0;
+    box-shadow: 0 5px 22px rgba(20, 10, 60, .035);
+  }
+
+  .header-title h1 {
+    font-family: "Manrope", sans-serif;
+    font-weight: 800;
+  }
+
+  .card-header h3 {
+    color: var(--text);
+    font: 800 17px "Manrope", sans-serif;
+  }
+
+  .card-header p,
+  .recent-info span {
+    font-size: 11px;
+  }
+
+  .card {
+    padding: 25px;
+  }
+
+  .dashboard-grid {
+    gap: 22px;
+  }
+
+  .recent-item {
+    padding: 15px 0;
+  }
+
+  .recent-info strong {
+    color: var(--text);
+    font-size: 12px;
+  }
+
+  .overview-card {
+    border-radius: 14px;
+  }
+
+  .overview-card:hover {
+    background: #fcfaff;
+    box-shadow: var(--card-shadow);
+    transform: translateY(-2px);
+  }
+
+  .primary-button,
+  .admin-review-actions button,
+  .admin-access-card button,
+  .admin-revoke-button,
+  .edit-button,
+  .publish-button {
+    border-radius: 999px;
+  }
+
+  .admin-review-actions button,
+  .admin-access-card button {
+    padding: 11px 17px;
+  }
+
+  .admin-table-scroll th,
+  table th {
+    padding: 15px 12px;
+    font-size: 10px;
+    letter-spacing: .35px;
+    text-transform: uppercase;
+  }
+
+  .admin-table-scroll td,
+  table td {
+    padding: 15px 12px;
+  }
+
+  .dark .content > .page-title {
+    border-color: var(--border);
+    background:
+      radial-gradient(circle, rgba(255, 128, 101, .32) 1.5px, transparent 2px) right 28px top 24px / 12px 12px,
+      linear-gradient(110deg, #252333, #392b43);
+  }
+
+  .dark .content > .page-title h2,
+  .dark .content > .page-title p {
+    color: var(--text);
+  }
+
+  .dark .overview-card:hover,
+  .dark table tbody tr:hover,
+  .dark .admin-table-scroll tbody tr:hover {
+    background: #2a2638;
+  }
+
+  @media (max-width: 600px) {
+    .content { padding: 22px 15px 35px; }
+    .content > .page-title { min-height: 150px; padding: 24px 20px; }
+    .content > .page-title h2 { font-size: 32px; }
+    .card { padding: 17px; }
+  }

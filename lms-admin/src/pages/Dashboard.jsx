@@ -2,15 +2,21 @@ function Dashboard({
   users,
   courses,
   categories,
+  purchases = [],
   setPage,
 }) {
   const students = users.filter(
-    (user) => user.role === "Student"
+    (user) => user.role.toLowerCase() === "student"
   ).length;
 
   const instructors = users.filter(
-    (user) => user.role === "Instructor"
+    (user) => user.role.toLowerCase() === "instructor"
   ).length;
+  const pendingReview = courses.filter(
+    (course) => course.status === "pending_review"
+  ).length;
+  const paidPurchases = purchases.filter((purchase) => purchase.status === "paid");
+  const revenue = paidPurchases.reduce((total, purchase) => total + Number(purchase.amount || 0), 0);
 
   return (
     <>
@@ -46,6 +52,18 @@ function Dashboard({
           title="Courses"
           value={courses.length}
           text="Total courses"
+        />
+        <StatCard
+          icon="✓"
+          title="Pending Review"
+          value={pendingReview}
+          text="Instructor submissions"
+        />
+        <StatCard
+          icon="₹"
+          title="Revenue"
+          value={`₹${revenue.toLocaleString("en-IN")}`}
+          text="Confirmed purchases"
         />
       </div>
 
@@ -102,7 +120,7 @@ function Dashboard({
                     </div>
 
                     <Badge
-                      text={user.role}
+                      text={user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                     />
                   </div>
                 ))}
@@ -180,6 +198,12 @@ function Dashboard({
         </div>
 
         <div className="overview-grid">
+          <Overview
+            icon="✓"
+            title="Review Queue"
+            value={pendingReview}
+            onClick={() => setPage("Review Queue")}
+          />
           <Overview
             icon="♙"
             title="Users"

@@ -21,7 +21,9 @@ The admin dashboard allows an administrator to:
 - Category creation and organization
 - Analytics and overview panels
 - Theme toggle for light/dark mode
-- Local browser persistence for all admin data
+- Shared API persistence for users and courses
+- Server persistence for users, courses, and categories
+- Browser persistence for the theme preference and authentication token
 
 ## Folder structure
 
@@ -57,11 +59,11 @@ lms-admin/
 
 ## How it works
 
-This admin area is a React + Vite frontend that stores its state in `localStorage` so administrators can manage records without a backend.
+This admin area is a React + Vite frontend. Users, courses, categories, and the admin profile are read from and written to the authenticated LMS API. Only the theme preference and JWT are kept in browser storage.
 
 - `src/App.jsx` is the core application state manager
-- It stores admin settings, users, courses, categories, and theme preferences
-- It uses `useEffect` to save the data after every update
+- It loads shared users and courses from `/api`
+- It stores only the theme preference and JWT in browser storage
 - Each page handles a different management function such as users, courses, analytics, and profiles
 - The sidebar helps navigate between the different admin modules
 
@@ -76,7 +78,17 @@ This admin area is a React + Vite frontend that stores its state in `localStorag
 
 ## Run this project
 
-From this folder:
+Start MongoDB and the shared API in a separate terminal:
+
+```sh
+cd server
+npm install
+# Create .env from .env.example and configure JWT_SECRET
+npm run seed
+npm run dev
+```
+
+Then, from this folder, start the admin portal:
 
 ```bash
 npm install
@@ -87,4 +99,4 @@ Then open the local Vite URL in the terminal.
 
 ## Notes
 
-This is a frontend-only admin dashboard designed for demos and educational use. It can later be connected to a real backend, authentication layer, and database for production deployment.
+See [server/README.md](../server/README.md) for database setup, API examples, and development account credentials.

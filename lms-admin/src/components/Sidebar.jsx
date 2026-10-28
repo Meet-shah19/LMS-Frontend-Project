@@ -18,6 +18,14 @@ function Sidebar({
       icon: "▣",
     },
     {
+      name: "Review Queue",
+      icon: "✓",
+    },
+    {
+      name: "Payments",
+      icon: "₹",
+    },
+    {
       name: "Categories",
       icon: "◫",
     },

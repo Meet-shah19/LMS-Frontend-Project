@@ -15,7 +15,7 @@ function Profile({
     setEmail(admin.email);
   }, [admin]);
 
-  function saveProfile(e) {
+  async function saveProfile(e) {
     e.preventDefault();
 
     if (!name.trim()) {
@@ -28,14 +28,12 @@ function Profile({
       return;
     }
 
-    setAdmin({
-      name: name.trim(),
-      email: email.trim(),
-    });
-
-    alert(
-      "Admin profile updated successfully!"
-    );
+    try {
+      await setAdmin({ name: name.trim(), email: email.trim() });
+      alert("Admin profile updated successfully!");
+    } catch {
+      alert("Could not update the admin profile.");
+    }
   }
 
   const letter =

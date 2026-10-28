@@ -2,7 +2,7 @@
 import { BookOpen, Plus, SearchX } from "lucide-react";
 import CourseCard from "../components/CourseCard";
 
-export default function MyCourses({ courses, search, onCreate, onEdit, onDelete }) {
+export default function MyCourses({ courses, search, onCreate, onEdit, onDelete, onSubmitForReview }) {
   const filtered = courses.filter((course) =>
     `${course.title} ${course.description} ${course.category}`
       .toLowerCase()
@@ -36,6 +36,7 @@ export default function MyCourses({ courses, search, onCreate, onEdit, onDelete 
               index={index}
               onEdit={onEdit}
               onDelete={onDelete}
+              onSubmitForReview={onSubmitForReview}
             />
           ))}
         </div>

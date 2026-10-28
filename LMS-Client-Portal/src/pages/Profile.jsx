@@ -1,6 +1,6 @@
 
-import { useEffect, useState } from "react";
-import { UserRound, Save } from "lucide-react";
+import { useState } from "react";
+import { Save } from "lucide-react";
 
 export default function Profile({
   profile = {},
@@ -8,12 +8,17 @@ export default function Profile({
 }) {
   const [name, setName] = useState(profile.name || "");
   const [email, setEmail] = useState(profile.email || "");
+  const [previousProfile, setPreviousProfile] = useState({
+    name: profile.name,
+    email: profile.email,
+  });
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
+  if (previousProfile.name !== profile.name || previousProfile.email !== profile.email) {
+    setPreviousProfile({ name: profile.name, email: profile.email });
     setName(profile.name || "");
     setEmail(profile.email || "");
-  }, [profile.name, profile.email]);
+  }
 
   function handleSubmit(event) {
     event.preventDefault();

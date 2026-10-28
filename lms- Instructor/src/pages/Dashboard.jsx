@@ -5,8 +5,8 @@ import {
 import StatCard from "../components/StatCard";
 import CourseCard from "../components/CourseCard";
 
-export default function Dashboard({ courses, onCreate, onEdit, onDelete, setPage }) {
-  const published = courses.filter((course) => course.status === "Published").length;
+export default function Dashboard({ courses, onCreate, onEdit, onDelete, onSubmitForReview, setPage }) {
+  const published = courses.filter((course) => course.status === "published").length;
   const lessonCount = courses.reduce((total, course) => total + (course.lessons?.length || 0), 0);
   const quizCount = courses.reduce((total, course) => total + (course.quizzes?.length || 0), 0);
 
@@ -57,6 +57,7 @@ export default function Dashboard({ courses, onCreate, onEdit, onDelete, setPage
               index={index}
               onEdit={onEdit}
               onDelete={onDelete}
+              onSubmitForReview={onSubmitForReview}
             />
           ))}
         </div>

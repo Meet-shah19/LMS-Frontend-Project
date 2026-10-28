@@ -12,10 +12,13 @@ function Users({
   const [email, setEmail] =
     useState("");
 
-  const [role, setRole] =
-    useState("Student");
+  const [password, setPassword] =
+    useState("");
 
-  function handleSubmit(e) {
+  const [role, setRole] =
+    useState("student");
+
+  async function handleSubmit(e) {
     e.preventDefault();
 
     if (!name.trim()) {
@@ -28,15 +31,25 @@ function Users({
       return;
     }
 
-    addUser({
-      name: name.trim(),
-      email: email.trim(),
-      role,
-    });
+    if (password.length < 8) {
+      alert("Please enter a temporary password of at least 8 characters.");
+      return;
+    }
 
-    setName("");
-    setEmail("");
-    setRole("Student");
+    try {
+      await addUser({
+        name: name.trim(),
+        email: email.trim(),
+        role,
+        password,
+      });
+      setName("");
+      setEmail("");
+      setPassword("");
+      setRole("student");
+    } catch {
+      // The app-level API error is shown above the current page.
+    }
   }
 
   return (
@@ -75,6 +88,14 @@ function Users({
             placeholder="Enter email address"
           />
 
+          <Input
+            label="Temporary password (8+ characters)"
+            type="password"
+            value={password}
+            onChange={setPassword}
+            placeholder="Set an initial password"
+          />
+
           <div className="input-group">
             <label>Role</label>
 
@@ -84,11 +105,11 @@ function Users({
                 setRole(e.target.value)
               }
             >
-              <option value="Student">
+              <option value="student">
                 Student
               </option>
 
-              <option value="Instructor">
+              <option value="instructor">
                 Instructor
               </option>
             </select>

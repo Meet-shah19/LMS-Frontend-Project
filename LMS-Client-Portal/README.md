@@ -13,7 +13,8 @@ The Client Portal helps students:
 - bookmark courses
 - take quizzes and check results
 - save notes and personal profile details
-- keep course progress in the browser using localStorage
+- load shared published courses from the LMS API
+- save progress, notes, quiz attempts, and certificates to the authenticated LMS API
 
 ## Main features
 
@@ -21,7 +22,8 @@ The Client Portal helps students:
 - Course catalog and searchable learning portal
 - Lesson completion tracking
 - Quiz evaluation with instant feedback
-- Notes and bookmarks saved locally
+- Server-persisted notes, enrollments, and progress
+- Bookmarks kept in app memory for the current session
 - Responsive sidebar and mobile menu
 - Student profile management
 
@@ -46,8 +48,6 @@ LMS-Client-Portal/
 │   │   ├── MyNotes.jsx
 │   │   ├── Profile.jsx
 │   │   └── QuizCenter.jsx
-│   ├── utils/
-│   │   └── storage.js
 │   ├── App.jsx
 │   ├── App.css
 │   ├── index.css
@@ -61,33 +61,38 @@ LMS-Client-Portal/
 
 ## How it works
 
-The app is powered by React + Vite and keeps most data in browser storage instead of a backend database.
+The app is powered by React + Vite. Published courses and student account data are loaded from the authenticated LMS API. A student sign-in is required; only the JWT is stored in browser storage.
 
 - `src/App.jsx` is the main controller for the portal
 - It contains the sidebar navigation and page switching logic
-- It manages states like:
-  - `courses`
-  - `progress`
-  - `notes`
-  - `bookmarks`
-  - `quizResults`
-  - `studentName` and `studentEmail`
-- `src/utils/storage.js` reads and writes saved data from `localStorage`
+- It loads approved or published courses from `/api/courses`
+- It loads enrollments and saved notes, progress, and certificates from `/api`
+- It keeps bookmarks and quiz-answer drafts in page state
 - Each page is a section of the learning portal and renders based on the active page state
 
 ## Example flow
 
 1. Student opens the portal
-2. Courses are loaded from local storage
+2. Published courses are loaded from the shared LMS API
 3. User clicks a course from the dashboard or explore page
 4. Course details and lessons are shown
 5. Student marks lessons complete
-6. Progress is saved automatically in the browser
-7. Quiz answers are checked and results are displayed
+6. Progress and notes are saved to the server
+7. Quiz attempts are scored and saved by the server
 
 ## Run this project
 
-From this folder:
+Start MongoDB and the shared API in a separate terminal:
+
+```sh
+cd server
+npm install
+# Create .env from .env.example and configure JWT_SECRET
+npm run seed
+npm run dev
+```
+
+Then, from this folder, start the client portal:
 
 ```bash
 npm install
@@ -98,4 +103,4 @@ Then open the local Vite URL shown in the terminal.
 
 ## Notes
 
-This portal is designed as a frontend-only learning experience. It is ideal for demo purposes and UI workflow testing, and it can later be connected to a real backend API and database.
+See [server/README.md](../server/README.md) for setup details and development account credentials.

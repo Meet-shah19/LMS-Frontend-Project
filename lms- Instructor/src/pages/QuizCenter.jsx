@@ -1,31 +1,12 @@
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { ClipboardList, Plus, Trash2 } from "lucide-react";
 
-function QuizCenter() {
-  const [courses, setCourses] = useState([]);
+function QuizCenter({ courses, loadingCourses, onCreate, onCreateCourse, onDelete }) {
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-
-  useEffect(() => {
-    function loadCourses() {
-      try {
-        const savedCourses = localStorage.getItem("meet_lms_courses");
-        setCourses(savedCourses ? JSON.parse(savedCourses) : []);
-      } catch (error) {
-        console.error("Error loading courses:", error);
-        setCourses([]);
-      }
-    }
-
-    loadCourses();
-    window.addEventListener("coursesUpdated", loadCourses);
-
-    return () => {
-      window.removeEventListener("coursesUpdated", loadCourses);
-    };
-  }, []);
 
   const quizzes = courses.flatMap((course) => {
     const savedQuizzes = Array.isArray(course.quizzes)
@@ -39,6 +20,7 @@ function QuizCenter() {
     return savedQuizzes.map((quiz, index) => ({
       ...quiz,
       id: quiz.id ?? `${course.id}-${index}`,
+      courseId: course.id,
       courseTitle: course.title || course.name || "Untitled Course",
       questions: Array.isArray(quiz.questions) ? quiz.questions : [],
     }));
@@ -100,31 +82,67 @@ function QuizCenter() {
 
   if (!selectedQuiz) {
     return (
-      <main className="quiz-center">
-        <h1>Quiz Center</h1>
-        <p>Choose a quiz from your courses.</p>
+      <main>
+        <div className="page-title-row">
+          <div>
+            <h1>Quiz Center</h1>
+            <p>Create quizzes for your courses and manage existing ones.</p>
+          </div>
+          <button
+            type="button"
+            className="button button-primary"
+            onClick={onCreate}
+            disabled={loadingCourses || courses.length === 0}
+          >
+            <Plus size={17} /> Create a quiz
+          </button>
+        </div>
 
         {quizzes.length === 0 ? (
-          <div className="quiz-empty">
+          <div className="empty-state">
             <h2>No quizzes available</h2>
             <p>
-              Create a quiz in Quiz Builder and save it to a course.
+              {courses.length === 0
+                ? "Create a course before building a quiz."
+                : "Create a quiz, add questions, and save it to one of your courses."}
             </p>
+            <button
+              type="button"
+              className="button button-primary"
+              onClick={courses.length === 0 ? onCreateCourse : onCreate}
+              disabled={loadingCourses}
+            >
+              <Plus size={17} /> {courses.length === 0 ? "Create a course first" : "Create your first quiz"}
+            </button>
           </div>
         ) : (
-          <div className="quiz-grid">
+          <div className="quiz-list">
             {quizzes.map((quiz) => (
-              <div className="quiz-card" key={quiz.id}>
-                <h3>{quiz.title || quiz.name || "Course Quiz"}</h3>
-                <p>{quiz.courseTitle}</p>
-                <p>{quiz.questions.length} questions</p>
+              <div className="quiz-list-item" key={quiz.id}>
+                <div className="quiz-list-icon"><ClipboardList size={19} /></div>
+                <div className="quiz-list-copy">
+                  <h3>{quiz.title || quiz.name || "Course Quiz"}</h3>
+                  <p>{quiz.courseTitle} - {quiz.questions.length} questions - {quiz.timeLimitMinutes || 10} min</p>
+                </div>
 
                 <button
+                  className="button button-secondary"
                   type="button"
-                  disabled={quiz.questions.length === 0}
+                  disabled={quiz.questions.length === 0 || !courses.find((course) => course.id === quiz.courseId)?.canEdit}
+                  title={!courses.find((course) => course.id === quiz.courseId)?.canEdit ? "Course is locked while pending review" : "Start quiz preview"}
                   onClick={() => startQuiz(quiz)}
                 >
                   Start Quiz
+                </button>
+                <button
+                  className="icon-button danger-button quiz-delete-button"
+                  type="button"
+                  aria-label={`Delete ${quiz.title || quiz.name || "quiz"}`}
+                  title="Delete quiz"
+                  disabled={!courses.find((course) => course.id === quiz.courseId)?.canEdit}
+                  onClick={() => onDelete(quiz.courseId, quiz.id)}
+                >
+                  <Trash2 size={17} />
                 </button>
               </div>
             ))}

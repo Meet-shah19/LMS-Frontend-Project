@@ -20,7 +20,7 @@ The Instructor Portal allows users to:
 - Quiz builder with course-linked questions
 - Dashboard analytics for course performance
 - Responsive instructor workspace layout
-- Local data persistence using browser storage
+- Shared API persistence for courses and quizzes
 - Course deletion and modification tools
 
 ## Folder structure
@@ -51,8 +51,6 @@ lms- Instructor/
 │   │   ├── MyCourses.jsx
 │   │   ├── PublishedCourses.jsx
 │   │   └── QuizCenter.jsx
-│   ├── utils/
-│   │   └── storage.js
 │   ├── App.jsx
 │   ├── App.css
 │   ├── index.css
@@ -66,26 +64,36 @@ lms- Instructor/
 
 ## How it works
 
-This app uses React + Vite and stores instructor course content in browser storage so it behaves like a lightweight local LMS dashboard.
+This app uses React + Vite and reads and writes course content through the authenticated shared LMS API.
 
 - `src/App.jsx` manages the overall instructor app state
 - It keeps a list of courses and handles creating, editing, and deleting them
 - It opens modals for the course editor and quiz builder
-- `src/utils/storage.js` saves and loads course data using localStorage
+- `/api/courses` shares course details, lessons, and quizzes with the admin and student portals
 - The sidebar and top bar help navigate between dashboard, courses, and quiz management pages
 
 ## Typical workflow
 
-1. Instructor logs in or opens the workspace
+1. Instructor signs in with an LMS account
 2. Creates a new course or edits an existing one
 3. Adds lessons, course details, and assessment materials
 4. Creates quizzes tied to the course
-5. Saves the content locally
+5. Saves the content to the shared LMS API
 6. Learners can then access published course content through the student portal
 
 ## Run this project
 
-From this folder:
+Start MongoDB and the shared API in a separate terminal:
+
+```sh
+cd server
+npm install
+# Create .env from .env.example and configure JWT_SECRET
+npm run seed
+npm run dev
+```
+
+Then, from this folder, start the instructor portal:
 
 ```bash
 npm install
@@ -96,4 +104,4 @@ Then open the Vite URL in the browser.
 
 ## Notes
 
-This is a frontend-first instructor tool for demo and educational use. It can be expanded to include backend APIs, authentication, real course publishing, and database storage.
+See [server/README.md](../server/README.md) for setup details and development account credentials.
